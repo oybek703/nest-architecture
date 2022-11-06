@@ -52,7 +52,7 @@
 			"single"
 		],
 		"semicolon": [
-			true,
+			false,
 			"always"
 		],
 		"trailing-comma": false,
