@@ -29,7 +29,7 @@ describe('Create and delete review (e2e)', () => {
     await app.init()
   })
 
-  it('should create new review', async () => {
+  it('/review/create (POST)', async () => {
     const { body } = await request(app.getHttpServer())
       .post('/review/create')
       .send(createDto)
@@ -38,34 +38,33 @@ describe('Create and delete review (e2e)', () => {
     expect(body._id).toBeDefined()
   })
 
-  it('should find reviews by productId', async () => {
+  it('/review/byProduct/:productId (GET) - success', async () => {
     const { body } = await request(app.getHttpServer())
       .get(`/review/byProduct/${productId}`)
       .expect(200)
     expect(body.length).toBe(1)
   })
 
-  it('should not return reviews if productId does not exist', async () => {
+  it('/review/byProduct/:productId (GET) - failure', async () => {
     const { body } = await request(app.getHttpServer())
       .get(`/review/byProduct/${new Types.ObjectId().toHexString()}`)
       .expect(200)
     expect(body.length).toBe(0)
   })
 
-  it('should delete review by id', async () => {
+  it('/review/:reviewId (DELETE) - success', async () => {
     const { body } = await request(app.getHttpServer())
       .delete(`/review/${createdReviewId}`)
       .expect(200)
   })
 
-  it('should not delete review does not exist', async () => {
-    const { body } = await request(app.getHttpServer())
+  it('/review/:reviewId (DELETE) - failure', async () => {
+    await request(app.getHttpServer())
       .delete(`/review/${new Types.ObjectId().toHexString()}`)
       .expect(404, {
         statusCode: 404,
         message: REVIEW_NOT_FOUND
       })
-    console.log(body)
   })
 
   afterAll(() => {
