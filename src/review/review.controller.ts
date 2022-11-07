@@ -16,7 +16,7 @@ import { REVIEW_NOT_FOUND } from './review.constants'
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
 
-  @Post()
+  @Post('create')
   async create(@Body() dto: CreateReviewDto) {
     return await this.reviewService.create(dto)
   }
