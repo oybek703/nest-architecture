@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 import { AuthController } from './auth.controller'
 import { TypegooseModule } from 'nestjs-typegoose'
 import { AuthModel } from './auth.model'
+import { AuthService } from './auth.service'
 
 @Module({
   controllers: [AuthController],
@@ -14,6 +15,7 @@ import { AuthModel } from './auth.model'
         }
       }
     ])
-  ]
+  ],
+  providers: [AuthService]
 })
 export class AuthModule {}
