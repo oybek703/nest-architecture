@@ -29,13 +29,20 @@ describe('Create and delete review (e2e)', () => {
     await app.init()
   })
 
-  it('/review/create (POST)', async () => {
+  it('/review/create (POST) - success', async () => {
     const { body } = await request(app.getHttpServer())
       .post('/review/create')
       .send(createDto)
       .expect(201)
     createdReviewId = body._id
     expect(body._id).toBeDefined()
+  })
+
+  it('/review/create (POST) - failure', async () => {
+    await request(app.getHttpServer())
+      .post('/review/create')
+      .send({ ...createDto, rating: 0 })
+      .expect(400)
   })
 
   it('/review/byProduct/:productId (GET) - success', async () => {
