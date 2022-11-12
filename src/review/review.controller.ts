@@ -39,7 +39,6 @@ export class ReviewController {
   @UseGuards(JwtGuard)
   @Get('byProduct/:productId')
   async get(@Param('productId') productId: string, @UserEmail() email: string) {
-    console.log(email)
     return await this.reviewService.findByProductId(productId)
   }
 
