@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common'
 import { InjectModel } from 'nestjs-typegoose'
 import { UserModel } from './user.model'
 import { ModelType } from '@typegoose/typegoose/lib/types'
@@ -34,7 +34,7 @@ export class AuthService {
     }
     const matchPassword = await compare(password, user.password)
     if (!matchPassword) {
-      throw new BadRequestException(WRONG_PASSWORD)
+      throw new UnauthorizedException(WRONG_PASSWORD)
     }
     return { email: user.email }
   }
