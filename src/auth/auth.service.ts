@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from 'nestjs-typegoose'
-import { AuthModel } from './auth.model'
+import { UserModel } from './user.model'
 import { ModelType } from '@typegoose/typegoose/lib/types'
 import { AuthDto } from './dto/auth.dto'
 import { compare, genSalt, hash } from 'bcryptjs'
@@ -10,7 +10,7 @@ import { JwtService } from '@nestjs/jwt'
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(AuthModel) private readonly authModel: ModelType<AuthModel>,
+    @InjectModel(UserModel) private readonly authModel: ModelType<UserModel>,
     private readonly jwtService: JwtService
   ) {}
 
