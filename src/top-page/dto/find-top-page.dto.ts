@@ -3,5 +3,5 @@ import { TopLevelCategory } from '../top-page.model'
 
 export class FindTopPageDto {
   @IsEnum(TopLevelCategory)
-  firstCategory: string
+  firstCategory: TopLevelCategory
 }
