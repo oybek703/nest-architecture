@@ -7,19 +7,24 @@ import {
   NotFoundException,
   Param,
   Patch,
-  Post
+  Post,
+  UseGuards,
+  UsePipes,
+  ValidationPipe
 } from '@nestjs/common'
-import { ProductModel } from './product.model'
 import { FindProductDto } from './dto/find-product.dto'
 import { CreateProductDto } from './dto/create-product.dto'
 import { ProductService } from './product.service'
 import { PRODUCT_NOT_FOUND_ERROR } from './product.constants'
+import { JwtGuard } from '../auth/guards/jwt.guard'
 
 @Controller('product')
 export class ProductController {
   private readonly productNotFoundException = new NotFoundException(PRODUCT_NOT_FOUND_ERROR)
   constructor(private readonly productService: ProductService) {}
 
+  @UsePipes(new ValidationPipe())
+  @UseGuards(JwtGuard)
   @Post('create')
   async create(@Body() dto: CreateProductDto) {
     return this.productService.create(dto)
@@ -52,7 +57,11 @@ export class ProductController {
     return updatedProduct
   }
 
-  @HttpCode(2000)
+  @HttpCode(200)
+  @UsePipes(new ValidationPipe())
+  @UseGuards(JwtGuard)
   @Post('find')
-  find(@Body() dto: FindProductDto) {}
+  async find(@Body() dto: FindProductDto) {
+    return this.productService.findWithReviews(dto)
+  }
 }

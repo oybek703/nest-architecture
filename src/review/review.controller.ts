@@ -22,6 +22,7 @@ export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
 
   @UsePipes(new ValidationPipe())
+  @UseGuards(JwtGuard)
   @Post('create')
   async create(@Body() dto: CreateReviewDto) {
     return await this.reviewService.create(dto)
