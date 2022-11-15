@@ -12,11 +12,26 @@ import { FileInterceptor } from '@nestjs/platform-express'
 import { FileElementResponse } from './dto/file-element.response'
 import { FilesService } from './files.service'
 import { MFile } from './mFile.class'
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger'
 
+@ApiTags('Files')
 @Controller('files')
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
 
+  @ApiBearerAuth()
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        files: {
+          type: 'string',
+          format: 'binary'
+        }
+      }
+    }
+  })
   @Post('upload')
   @HttpCode(200)
   @UseGuards(JwtGuard)
