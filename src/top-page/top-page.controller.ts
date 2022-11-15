@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  Logger,
   NotFoundException,
   Param,
   Patch,
@@ -20,12 +21,16 @@ import { IdValidationPipe } from '../pipes/id-validation.pipe'
 import { NOT_FOUND_TOP_PAGE_ERROR } from './top-page.constants'
 import { JwtGuard } from '../auth/guards/jwt.guard'
 import { ApiTags } from '@nestjs/swagger'
+import { HhService } from '../hh/hh.service'
 
 @ApiTags('Top-page')
 @Controller('top-page')
 export class TopPageController {
   private readonly notFoundException = new NotFoundException(NOT_FOUND_TOP_PAGE_ERROR)
-  constructor(private readonly topPageService: TopPageService) {}
+  constructor(
+    private readonly topPageService: TopPageService,
+    private readonly hhService: HhService
+  ) {}
 
   @UsePipes(new ValidationPipe())
   @UseGuards(JwtGuard)
@@ -76,5 +81,16 @@ export class TopPageController {
   @Post('find')
   find(@Body() dto: FindTopPageDto) {
     return this.topPageService.findByCategory(dto.firstCategory)
+  }
+
+  @Post('test')
+  async test() {
+    const data = await this.topPageService.findForHhUpdate(new Date())
+    for (const page of data) {
+      const hhData = await this.hhService.getData(page.category)
+      Logger.log(hhData)
+      page.hh = hhData
+      await this.topPageService.update(page._id, page)
+    }
   }
 }

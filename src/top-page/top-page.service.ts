@@ -28,7 +28,7 @@ export class TopPageService {
       .exec()
   }
 
-  update(topPageId: string, dto: CreateTopPageDto) {
+  update(topPageId: string | Types.ObjectId, dto: CreateTopPageDto) {
     return this.topPageModel.findByIdAndUpdate(topPageId, dto, { new: true })
   }
 
@@ -39,8 +39,15 @@ export class TopPageService {
   async findForHhUpdate(date: Date) {
     return this.topPageModel
       .find({
-        firstCategory: 0,
-        'hh.updatedAt': { $lt: addDays(date, -1) }
+        // firstCategory: 0
+        // $or: [
+        //   {
+        //     'hh.updatedAt': { $lt: addDays(date, -1) }
+        //   },
+        //   {
+        //     'hh.updatedAt': { $exists: false }
+        //   }
+        // ]
       })
       .exec()
   }
