@@ -9,6 +9,7 @@ import { getMongoConfig } from './configs/mongo.config'
 import { RedirectMiddleware } from './common/middleware/redirect.middleware'
 import { FilesModule } from './files/files.module'
 import { TelegramModule } from './telegram/telegram.module'
+import { getTelegramConfig } from './configs/telegram.config'
 
 @Module({
   imports: [
@@ -23,7 +24,11 @@ import { TelegramModule } from './telegram/telegram.module'
     ProductModule,
     ReviewModule,
     FilesModule,
-    TelegramModule
+    TelegramModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: getTelegramConfig
+    })
   ]
 })
 export class AppModule implements NestModule {

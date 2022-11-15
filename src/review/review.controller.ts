@@ -41,7 +41,7 @@ export class ReviewController {
   @UseGuards(JwtGuard)
   @Post('notify')
   async notify(@Body() dto: CreateReviewDto) {
-    const message = `Name: ${dto.name}\n Title: ${dto.title}\n Desc: ${dto.description}\n Rating: ${dto.rating}\n Product id: ${dto.productId}`
+    const message = `Name: ${dto.name}\nTitle: ${dto.title}\nDesc: ${dto.description}\nRating: ${dto.rating}\nProduct id: ${dto.productId}`
     return await this.telegramService.sendMessage(message)
   }
 

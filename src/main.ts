@@ -13,7 +13,6 @@ async function bootstrap() {
     .setVersion('1.1.0')
     .addTag('YO-top-services')
     .build()
-  console.log(PORT)
   const document = SwaggerModule.createDocument(app, config)
   SwaggerModule.setup('/api/docs', app, document)
   await app.listen(PORT)

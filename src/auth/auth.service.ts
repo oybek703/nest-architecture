@@ -1,10 +1,15 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common'
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException
+} from '@nestjs/common'
 import { InjectModel } from 'nestjs-typegoose'
 import { UserModel } from './user.model'
 import { ModelType } from '@typegoose/typegoose/lib/types'
 import { AuthDto } from './dto/auth.dto'
 import { compare, genSalt, hash } from 'bcryptjs'
-import { USER_NOT_FOUND_ERROR, WRONG_PASSWORD } from './auth.constants'
+import { ALREADY_REGISTERED_ERROR, USER_NOT_FOUND_ERROR, WRONG_PASSWORD } from './auth.constants'
 import { JwtService } from '@nestjs/jwt'
 
 @Injectable()
@@ -16,6 +21,8 @@ export class AuthService {
 
   async createUser(dto: AuthDto) {
     const salt = await genSalt(5)
+    const existingUser = await this.authModel.findOne({ email: dto.email })
+    if (existingUser) throw new BadRequestException(ALREADY_REGISTERED_ERROR)
     const hashedPassword = await hash(dto.password, salt)
     const newUser = await this.authModel.create({ email: dto.email, password: hashedPassword })
     const savesUser = await newUser.save()

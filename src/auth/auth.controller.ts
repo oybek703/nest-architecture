@@ -11,15 +11,20 @@ import { AuthDto } from './dto/auth.dto'
 import { AuthService } from './auth.service'
 import { ALREADY_REGISTERED_ERROR } from './auth.constants'
 import { ApiTags } from '@nestjs/swagger'
+import { TelegramService } from '../telegram/telegram.service'
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly telegramService: TelegramService
+  ) {}
 
   @UsePipes(new ValidationPipe())
   @Post('register')
   async register(@Body() dto: AuthDto) {
+    await this.telegramService.sendMessage(`Register => \n ${JSON.stringify(dto)}`)
     return this.authService.createUser(dto)
   }
 
