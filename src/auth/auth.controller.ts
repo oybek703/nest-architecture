@@ -10,7 +10,9 @@ import {
 import { AuthDto } from './dto/auth.dto'
 import { AuthService } from './auth.service'
 import { ALREADY_REGISTERED_ERROR } from './auth.constants'
+import { ApiTags } from '@nestjs/swagger'
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

@@ -19,7 +19,9 @@ import { TopPageService } from './top-page.service'
 import { IdValidationPipe } from '../pipes/id-validation.pipe'
 import { NOT_FOUND_TOP_PAGE_ERROR } from './top-page.constants'
 import { JwtGuard } from '../auth/guards/jwt.guard'
+import { ApiTags } from '@nestjs/swagger'
 
+@ApiTags('Top-page')
 @Controller('top-page')
 export class TopPageController {
   private readonly notFoundException = new NotFoundException(NOT_FOUND_TOP_PAGE_ERROR)

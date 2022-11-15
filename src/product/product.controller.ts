@@ -18,12 +18,15 @@ import { ProductService } from './product.service'
 import { PRODUCT_NOT_FOUND_ERROR } from './product.constants'
 import { JwtGuard } from '../auth/guards/jwt.guard'
 import { IdValidationPipe } from '../pipes/id-validation.pipe'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 
+@ApiTags('Products')
 @Controller('product')
 export class ProductController {
   private readonly productNotFoundException = new NotFoundException(PRODUCT_NOT_FOUND_ERROR)
   constructor(private readonly productService: ProductService) {}
 
+  @ApiBearerAuth()
   @UsePipes(new ValidationPipe())
   @UseGuards(JwtGuard)
   @Post('create')
@@ -40,6 +43,8 @@ export class ProductController {
     return product
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard)
   @Delete(':productId')
   async delete(@Param('productId', IdValidationPipe) productId: string) {
     const deletedProduct = await this.productService.delete(productId)
@@ -49,6 +54,8 @@ export class ProductController {
     return deletedProduct
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard)
   @Patch(':productId')
   async update(
     @Param('productId', IdValidationPipe) productId: string,
@@ -61,6 +68,7 @@ export class ProductController {
     return updatedProduct
   }
 
+  @ApiBearerAuth()
   @HttpCode(200)
   @UsePipes(new ValidationPipe())
   @UseGuards(JwtGuard)

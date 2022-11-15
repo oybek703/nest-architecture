@@ -17,11 +17,14 @@ import { REVIEW_NOT_FOUND } from './review.constants'
 import { JwtGuard } from '../auth/guards/jwt.guard'
 import { UserEmail } from '../decorators/user-email.decorator'
 import { IdValidationPipe } from '../pipes/id-validation.pipe'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 
+@ApiTags('Reviews')
 @Controller('review')
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
 
+  @ApiBearerAuth()
   @UsePipes(new ValidationPipe())
   @UseGuards(JwtGuard)
   @Post('create')
@@ -29,6 +32,8 @@ export class ReviewController {
     return await this.reviewService.create(dto)
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard)
   @Delete(':reviewId')
   async delete(@Param('reviewId', IdValidationPipe) reviewId: string) {
     const deletedReview = await this.reviewService.delete(reviewId)
@@ -38,12 +43,15 @@ export class ReviewController {
     return deletedReview
   }
 
+  @ApiBearerAuth()
   @UseGuards(JwtGuard)
   @Get('byProduct/:productId')
   async get(@Param('productId', IdValidationPipe) productId: string, @UserEmail() email: string) {
     return await this.reviewService.findByProductId(productId)
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard)
   @Delete('byProduct/:productId')
   async deleteByProductId(@Param('productId', IdValidationPipe) productId: string) {
     return await this.reviewService.deleteByProductId(productId)
