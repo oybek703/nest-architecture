@@ -18,11 +18,15 @@ import { JwtGuard } from '../auth/guards/jwt.guard'
 import { UserEmail } from '../decorators/user-email.decorator'
 import { IdValidationPipe } from '../pipes/id-validation.pipe'
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import { TelegramService } from '../telegram/telegram.service'
 
 @ApiTags('Reviews')
 @Controller('review')
 export class ReviewController {
-  constructor(private readonly reviewService: ReviewService) {}
+  constructor(
+    private readonly reviewService: ReviewService,
+    private readonly telegramService: TelegramService
+  ) {}
 
   @ApiBearerAuth()
   @UsePipes(new ValidationPipe())
@@ -30,6 +34,15 @@ export class ReviewController {
   @Post('create')
   async create(@Body() dto: CreateReviewDto) {
     return await this.reviewService.create(dto)
+  }
+
+  @ApiBearerAuth()
+  @UsePipes(new ValidationPipe())
+  @UseGuards(JwtGuard)
+  @Post('notify')
+  async notify(@Body() dto: CreateReviewDto) {
+    const message = `Name: ${dto.name}\n Title: ${dto.title}\n Desc: ${dto.description}\n Rating: ${dto.rating}\n Product id: ${dto.productId}`
+    return await this.telegramService.sendMessage(message)
   }
 
   @ApiBearerAuth()
