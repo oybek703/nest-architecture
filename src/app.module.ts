@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypegooseModule } from 'nestjs-typegoose'
 import { getMongoConfig } from './configs/mongo.config'
 import { RedirectMiddleware } from './common/middleware/redirect.middleware'
+import { FilesModule } from './files/files.module'
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { RedirectMiddleware } from './common/middleware/redirect.middleware'
     AuthModule,
     TopPageModule,
     ProductModule,
-    ReviewModule
+    ReviewModule,
+    FilesModule
   ]
 })
 export class AppModule implements NestModule {
