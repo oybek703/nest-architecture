@@ -21,14 +21,11 @@ export class HhService {
     const tempData = { count: 10, seniorSalary: 110000, middleSalary: 70000, juniorSalary: 40000 }
     try {
       // const res = await this.httpService.get(API_URL.vacancies, {
-      //   params: { text, clusters: true },
-      //   headers: {
-      //     'User-Agent': 'YoTop/1.0 (test@gmail.com)',
-      //     Authorization: `Bearer ${this.token}`
-      //   }
+      //   params: { text, clusters: true }
       // })
       // const { data } = await lastValueFrom(res)
       // return this.parseData(data)
+      // @returned temporary data in order not free limit tier in dedicated server
       return tempData
     } catch (e) {
       Logger.error(e)

@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  Logger,
   NotFoundException,
   Param,
   Patch,
@@ -83,10 +84,12 @@ export class TopPageController {
     return this.topPageService.findByCategory(dto.firstCategory)
   }
 
-  @Cron(CronExpression.EVERY_6_MONTHS, { name: TOP_PAGE_UPDATE_HH_DATA })
+  // We can run cron jobs like this
+  // @Cron(CronExpression.EVERY_YEAR, { name: TOP_PAGE_UPDATE_HH_DATA })
   async test() {
     const data = await this.topPageService.findForHhUpdate(new Date())
     for (const page of data) {
+      Logger.log(page)
       page.hh = await this.hhService.getData(page.category)
       await this.topPageService.update(page._id, page)
     }
