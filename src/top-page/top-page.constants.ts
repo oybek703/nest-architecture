@@ -1,1 +1,2 @@
 export const NOT_FOUND_TOP_PAGE_ERROR = 'Top page not found!'
+export const TOP_PAGE_UPDATE_HH_DATA = 'TOP_PAGE_UPDATE_HH_DATA'

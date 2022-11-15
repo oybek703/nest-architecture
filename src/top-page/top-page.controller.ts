@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   HttpCode,
-  Logger,
   NotFoundException,
   Param,
   Patch,
@@ -18,10 +17,11 @@ import { FindTopPageDto } from './dto/find-top-page.dto'
 import { CreateTopPageDto } from './dto/create-top-page.dto'
 import { TopPageService } from './top-page.service'
 import { IdValidationPipe } from '../pipes/id-validation.pipe'
-import { NOT_FOUND_TOP_PAGE_ERROR } from './top-page.constants'
+import { NOT_FOUND_TOP_PAGE_ERROR, TOP_PAGE_UPDATE_HH_DATA } from './top-page.constants'
 import { JwtGuard } from '../auth/guards/jwt.guard'
 import { ApiTags } from '@nestjs/swagger'
 import { HhService } from '../hh/hh.service'
+import { Cron, CronExpression } from '@nestjs/schedule'
 
 @ApiTags('Top-page')
 @Controller('top-page')
@@ -83,13 +83,11 @@ export class TopPageController {
     return this.topPageService.findByCategory(dto.firstCategory)
   }
 
-  @Post('test')
+  @Cron(CronExpression.EVERY_6_MONTHS, { name: TOP_PAGE_UPDATE_HH_DATA })
   async test() {
     const data = await this.topPageService.findForHhUpdate(new Date())
     for (const page of data) {
-      const hhData = await this.hhService.getData(page.category)
-      Logger.log(hhData)
-      page.hh = hhData
+      page.hh = await this.hhService.getData(page.category)
       await this.topPageService.update(page._id, page)
     }
   }

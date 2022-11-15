@@ -9,6 +9,7 @@ import { HhData } from '../top-page/top-page.model'
 @Injectable()
 export class HhService {
   private readonly token: string
+
   constructor(
     private readonly configService: ConfigService,
     private readonly httpService: HttpService
@@ -16,19 +17,22 @@ export class HhService {
     this.token = this.configService.get('HH_TOKEN') || ''
   }
 
-  async getData(text: string) {
+  async getData(text: string): Promise<HhData> {
+    const tempData = { count: 10, seniorSalary: 110000, middleSalary: 70000, juniorSalary: 40000 }
     try {
-      const res = await this.httpService.get(API_URL.vacancies, {
-        params: { text, clusters: true },
-        headers: {
-          'User-Agent': 'YoTop/1.0 (test@gmail.com)',
-          Authorization: `Bearer ${this.token}`
-        }
-      })
-      const { data } = await lastValueFrom(res)
-      return this.parseData(data)
+      // const res = await this.httpService.get(API_URL.vacancies, {
+      //   params: { text, clusters: true },
+      //   headers: {
+      //     'User-Agent': 'YoTop/1.0 (test@gmail.com)',
+      //     Authorization: `Bearer ${this.token}`
+      //   }
+      // })
+      // const { data } = await lastValueFrom(res)
+      // return this.parseData(data)
+      return tempData
     } catch (e) {
       Logger.error(e)
+      return tempData
     }
   }
 
@@ -37,11 +41,11 @@ export class HhService {
     if (!salaryCluster) {
       throw new Error(CLUSTER_NOT_FOUND_ERROR)
     }
-    const juniorSalary = this.getSalaryFromString(salaryCluster.items[1].name)
-    const middleSalary = this.getSalaryFromString(
+    const juniorSalary = HhService.getSalaryFromString(salaryCluster.items[1].name)
+    const middleSalary = HhService.getSalaryFromString(
       salaryCluster.items[Math.ceil(salaryCluster.items.length / 2)].name
     )
-    const seniorSalary = this.getSalaryFromString(
+    const seniorSalary = HhService.getSalaryFromString(
       salaryCluster.items[salaryCluster.items.length - 1].name
     )
     return {
@@ -52,7 +56,7 @@ export class HhService {
     }
   }
 
-  private getSalaryFromString(s: string): number {
+  private static getSalaryFromString(s: string): number {
     const res = s.match(/(\d+)/g)
     if (!res) {
       return 0
